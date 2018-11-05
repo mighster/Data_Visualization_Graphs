@@ -1,0 +1,71 @@
+---
+title: "Shiny document"
+author: "Guillaume Lobet"
+date: "2/14/2018"
+output: ioslides_presentation
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Shiny Presentation
+
+This R Markdown presentation is made interactive using Shiny. The viewers of the presentation can change the assumptions underlying what's presented and see the results immediately. 
+
+To learn more, see [Interactive Documents](http://rmarkdown.rstudio.com/authoring_shiny.html).
+
+
+## Classic plot
+
+```{r, echo=F, warning=F, error=F, message=F}
+library(tidyverse)
+
+mydata <- read_csv("datasets/architect.csv")
+
+```
+
+```{r}
+
+ggplot(data=mydata, aes(x=TRL, y=TNLR, colour=genotype, label=FileName)) +
+  geom_point()
+
+```
+
+
+## Interactive Plot
+
+```{r eruptions}
+inputPanel(
+  sliderInput("time", "Time to plot", min = min(mydata$Time), max = max(mydata$Time), step = 1, value = 3)
+)
+
+
+renderPlot({
+  mydata %>%
+    filter(Time == input$time) %>%
+    ggplot(aes(x=TRL, y=TNLR, colour=genotype)) +
+    geom_point()
+})
+```
+
+
+## Interactive Plot
+
+```{r }
+inputPanel(
+  selectInput("xvar", "X variable", choices = colnames(mydata)[-c(1:4)]),
+  selectInput("yvar", "Y variable", choices = colnames(mydata)[-c(1:4)]),
+  sliderInput("time1", "Time to plot", min = min(mydata$Time), max = max(mydata$Time), step=1, value = 3)
+)
+
+
+renderPlot({
+  mydata %>%
+    filter(Time == input$time1) %>%
+    ggplot(aes_string(input$xvar, input$yvar, colour="genotype")) +
+    geom_point()
+})
+```
+

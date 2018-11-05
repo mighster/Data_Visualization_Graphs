@@ -1,0 +1,96 @@
+---
+title: "ggplot exercice résolues"
+author: "Guillaume Lobet"
+date: "17 March 2016"
+output: html_document
+---
+
+## Chargement des données
+
+Charger la librairie `ggplot2`. 
+
+Charger le jeux de données `data.csv` et regarder les différentes variables.
+
+```{r, eval=T, echo=T}
+
+library(ggplot2)
+rs <- read.csv("data.csv")
+str(rs)
+
+```
+
+
+## Exercice 1
+
+Comparer les longueurs racinaires entre genotypes, pour les différents traitements
+
+```{r, eval=T, echo=T}
+
+ggplot(data=rs, aes(x=treatment, y=root, fill=genotype)) + 
+  geom_boxplot(position = position_dodge(width=0.8)) +
+  theme_bw()
+```
+
+
+```{r, eval=T, echo=T}
+
+ggplot(data=rs, aes(x=genotype, y=root)) + 
+  geom_boxplot(position = position_dodge(width=0.8)) +
+  theme_bw() + 
+  facet_grid(.~treatment)
+```
+
+
+## Exercice 2
+
+Regarder si il existe une relation entre les longueurs racinaires et foliaires. 
+
+```{r, eval=T, echo=T}
+
+ggplot(data=rs, aes(x=root, y=leaf)) + 
+  geom_point() + 
+  theme_bw()
+
+```
+
+## Exercice 3
+
+Même chose que pour l'exercice précédent, mais en comparant les genotypes et en dessinant la droite de regression linéaire.
+
+```{r, eval=T, echo=T}
+
+ggplot(data=rs, aes(x=root, y=leaf, colour=genotype)) + 
+  geom_smooth(se = FALSE, method="lm") +
+  geom_point() + 
+  theme_bw()
+
+```
+
+## Exercice 4
+
+Même chose que pour l'exercice précédent, mais en zoomant sur les valeurs du génotype `Gaspe`. 
+
+```{r, eval=T, echo=T}
+
+ggplot(data=rs, aes(x=root, y=leaf, colour=genotype)) + 
+  geom_smooth(se = FALSE, method="lm") +
+  geom_point() + 
+  theme_bw() + 
+  ylim(range(rs$leaf[rs$genotype == "Gaspe"])) + 
+  xlim(range(rs$root[rs$genotype == "Gaspe"]))  
+
+```
+
+
+## Exercice 5
+
+Comparer les longueurs foliares en fonction du nombre de feuilles.
+
+```{r, eval=T, echo=T}
+
+ggplot(data=rs, aes(x=factor(leaf_number), y=leaf, colour=genotype)) + 
+  geom_boxplot() + 
+  theme_bw()
+
+```
+
